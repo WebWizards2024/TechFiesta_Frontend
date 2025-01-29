@@ -1,8 +1,10 @@
-import React from 'react';
-import { Link ,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
+import ALink from "../Reuseable/ALink";
+import Input from "../Reuseable/Input";
+import Button from "../Reuseable/Button";
 
 function Home() {
-    const navigate = useNavigate()
+  const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col">
       {/* Header Section */}
@@ -35,9 +37,12 @@ function Home() {
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row items-center">
               <div className="md:w-1/2 mb-8 md:mb-0">
-                <h1 className="text-4xl md:text-5xl font-bold mb-4">Welcome to YourApp</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-4">
+                  Welcome to YourApp
+                </h1>
                 <p className="text-xl mb-6">
-                  Discover amazing features that will revolutionize your workflow.
+                  Discover amazing features that will revolutionize your
+                  workflow.
                 </p>
               </div>
               <div className="md:w-1/2">
@@ -49,18 +54,56 @@ function Home() {
                 />
               </div>
             </div>
-            <button onClick={() => navigate('/container/profile')}>Dashboard</button>
+            <button onClick={() => navigate("/container/profile")}>
+              Dashboard
+            </button>
           </div>
         </section>
 
         {/* Features Section */}
         <section className="py-20 bg-gray-50">
           <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Features</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Add feature cards or other components here */}
-            </div>
+            <h2 className="text-3xl font-bold text-center mb-12">
+              Our Features
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8"></div>
           </div>
+          <form className="bg-white m-4 p-6 rounded-lg shadow-md max-w-md w-full">
+            <h2 className="text-[#012d61] text-xl font-bold mb-4">
+              Upload Form
+            </h2>
+
+            <Input
+              label="Email Address"
+              type="email"
+              name="email"
+              placeholder="example@gmail.com"
+              // value={formData.email}
+              // onChange={handleChange}
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              name="password"
+              placeholder="Enter your password"
+              // value={formData.password}
+              // onChange={handleChange}
+              extraStyles="mt-3"
+            />
+
+            <Input
+              label="Upload Document"
+              type="file"
+              name="file"
+              // onChange={handleChange}
+              extraStyles="mt-3"
+            />
+
+            <Button type="primary" extraStyles="w-full mt-4">
+              Submit
+            </Button>
+          </form>
         </section>
 
         {/* Call to Action Section */}
@@ -68,7 +111,8 @@ function Home() {
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-bold mb-4">Ready to Get Started?</h2>
             <p className="text-xl mb-8">
-              Join thousands of satisfied users and take your productivity to the next level.
+              Join thousands of satisfied users and take your productivity to
+              the next level.
             </p>
           </div>
         </section>
@@ -110,7 +154,9 @@ function Home() {
             </div>
           </div>
           <div className="mt-8 text-center text-sm">
-            <p>&copy; {new Date().getFullYear()} YourApp. All rights reserved.</p>
+            <p>
+              &copy; {new Date().getFullYear()} YourApp. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
