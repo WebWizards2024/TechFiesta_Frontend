@@ -1,3 +1,4 @@
+// A link is <a></a> tag (Anchor Link)
 function ALink({ href, children, extraStyles = "", newTab = false }) {
   return (
     <a
