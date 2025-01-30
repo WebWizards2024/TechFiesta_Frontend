@@ -1,7 +1,9 @@
 import { Phone, Mail, User, Calendar, Weight, Ruler, MapPin, Droplet, FileText, AlertCircle, Edit } from "lucide-react"
 import profileimg from '../../assets/profileimg.png'
+import { useNavigate } from "react-router-dom"
 
 function Profile() {
+  const navigate = useNavigate();
   return (
     <div className="h-screen w-screen overflow-auto bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
@@ -42,7 +44,7 @@ function Profile() {
                   </div>
                 </div>
               </div>
-              <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center">
+              <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center" onClick={() => navigate('/container/editprofile')}>
                 <Edit size={16} className="mr-2" />
                 Edit Profile
               </button>

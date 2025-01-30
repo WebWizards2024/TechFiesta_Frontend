@@ -16,6 +16,8 @@ import Home from "./components/Home/Home";
 import Container from "./components/Container/Container";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import ProfileEditForm from './components/Profile/ProfileEditForm'
+
 
 
 const queryClient = new QueryClient({
@@ -44,6 +46,7 @@ function App() {
             {/* Child Routes (Fix: Remove leading /) */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="editprofile" element={<ProfileEditForm />} />
             <Route path="solution" element={<Solution />} />
             <Route path="community" element={<Community />} />
           </Route>
