@@ -1,136 +1,137 @@
-import React, { useState, useEffect, useRef } from 'react'
-import registerImg from '../assets/register.svg'
-import { CiUser } from "react-icons/ci";
-import { MdOutlineEmail } from "react-icons/md";
-import { IoKeyOutline, IoSchoolOutline } from "react-icons/io5";
-import toast, { Toaster } from 'react-hot-toast';
-import axios from 'axios'
-import { useNavigate, Link } from 'react-router-dom';
+import { useState } from "react";
 
+const Register = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
+      {/* Logo */}
+      
 
+      {/* Sign Up Form */}
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-sm m-10">
+        <h1 className="text-3xl font-semibold text-[#2E66E5] mb-8">Sign Up</h1>
 
-const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
-const EMAIL_REGEX = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
-
-
-function Register() {
-
-    const navigate = useNavigate()
-    const userRef = useRef()
-    const [email, setEmail] = useState('')
-    const [pwd, setPwd] = useState('')
-    const [fullName, setfullName] = useState('')
-    const [errMsg, setErrMsg] = useState("")
-
-
-    useEffect(() => {
-        userRef.current.focus()
-    }, [])
-
-    const handleRegister = async () => {
-
-        if (!PWD_REGEX.test(pwd)) {
-            toast.error("Password must be 8-24 characters, containing uppercase and lowercase letters, a number, and a special character.")
-            return;
-        }
-        if (!EMAIL_REGEX.test(email)) {
-            toast.error("Enter Valid Email")
-            return;
-        }
-        try {
-            const response = await axios.post('/api/v1/user/register',
-                JSON.stringify({ fullName: fullName, email, password: pwd }),
-                {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    withCredentials: true
-                }
-            )
-            console.log(response?.data);
-            console.log(JSON.stringify(response));
-            toast.success("User Register Successfully")
-            navigate("/login")
-            setUser("")
-            setPwd("")
-            setEmail("")
-            setClgName("")
-            // setTimeout(() => {
-            //     navigate('/login')
-            // }, 2000);
-
-        } catch (err) {
-
-            if (!err) {
-                toast.error("No Server Response")
-            } else if (err.response?.status === 409) {
-                toast.error("User with email or username already exists")
-            }
-
-        }
-    }
-
-
-    return (
-        <div className='w-screen h-screen bg-[#f5f5f5] flex justify-center items-center sm:p-10 p-0'>
-            <div className='bg-white grid sm:grid-cols-2 grid-cols-1 rounded-xl  w-[80%] shadow-xl '>
-                <div className='hidden sm:block'>
-                    <img src={registerImg} alt="" className='' />
-                </div>
-                <form onSubmit={(e) => e.preventDefault()}>
-                    <div className='flex flex-col p-3 sm:p-5 gap-3 items-center'>
-                        <div>
-                            <h1 className='text-2xl font-bold text-blue-500'>Register</h1>
-                        </div>
-
-                        <div className='flex flex-col justify-center mt-10  w-[90%]  '>
-                            <input
-                                type="text"
-                                ref={userRef}
-                                placeholder='Full Name'
-                                required
-                                value={fullName}
-                                autoComplete="off"
-                                onChange={(e) => { setfullName(e.target.value) }}
-                                className='cursor-pointer outline-blue-500 px-10 w-[100%] py-3 bg-[#f5f5f5]    rounded-md border border-blue-500' />
-                            <IoSchoolOutline size={24} className='absolute text-blue-500 ml-2' />
-                        </div>
-                        <div className='flex flex-col justify-center  w-[90%]  '>
-                            <input
-                                type="text"
-
-                                value={email}
-                                autoComplete="off"
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                                placeholder='Email'
-                                className='cursor-pointer outline-blue-500 px-10 w-[100%] py-3 bg-[#f5f5f5]    rounded-md border border-blue-500' />
-                            <MdOutlineEmail size={24} className='absolute text-blue-500 ml-2' />
-
-                        </div>
-
-                        <div className='flex flex-col justify-center  w-[90%]  '>
-                            <input
-                                type="password"
-                                placeholder='Password'
-                                autoComplete="current-password"
-                                value={pwd}
-                                required
-                                onChange={(e) => setPwd(e.target.value)}
-                                className='cursor-pointer outline-blue-500 px-10 w-[100%] py-3 bg-[#f5f5f5]    rounded-md border border-blue-500' />
-                            <IoKeyOutline size={24} className='absolute text-blue-500 ml-2' />
-                        </div>
-
-
-                        <button className='bg-blue-700 mt-5 py-4 w-[90%]  text-white rounded-lg hover:bg-blue-800' onClick={handleRegister}>Register</button>
-                        <p >Already have Account <Link to='/login' className='text-blue-500 underline'> Login </Link></p>
-                    </div>
-                    <Toaster />
-                </form>
+        <form className="space-y-6">
+          {/* Name Fields */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
+                First name
+              </label>
+              <input
+                id="firstName"
+                type="text"
+                placeholder="John"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
+              />
             </div>
-        </div>
-    )
-}
 
-export default Register
+            <div className="space-y-2">
+              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
+                Last name
+              </label>
+              <input
+                id="lastName"
+                type="text"
+                placeholder="Doe"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
+              />
+            </div>
+          </div>
+
+          {/* Email Field */}
+          <div className="space-y-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              Email address
+            </label>
+            <input
+              id="email"
+              type="email"
+              placeholder="example@gmail.com"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
+            />
+          </div>
+
+          {/* Password Field */}
+          <div className="space-y-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-[#2E66E5] transition"
+              >
+                {showPassword ? "🙈" : "👁"}
+              </button>
+            </div>
+          </div>
+
+          {/* Confirm Password Field */}
+          <div className="space-y-2">
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+              Confirm password
+            </label>
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-[#2E66E5] transition"
+              >
+                {showConfirmPassword ? "🙈" : "👁"}
+              </button>
+            </div>
+          </div>
+
+          {/* Terms and Conditions */}
+          <div className="flex items-center">
+            <input
+              id="terms"
+              type="checkbox"
+              className="h-4 w-4 text-[#2E66E5] focus:ring-[#2E66E5] border-gray-300 rounded"
+            />
+            <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
+              Accept terms and conditions
+            </label>
+          </div>
+
+          {/* Sign Up Button */}
+          <button
+            type="submit"
+            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#2E66E5] hover:bg-[#2E66E5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2E66E5] transform transition-transform duration-200 ease-in-out hover:scale-105"
+          >
+            Sign up
+          </button>
+
+          {/* Google Sign In */}
+          <button
+            type="button"
+            className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2E66E5] flex items-center justify-center transform transition-transform duration-200 ease-in-out hover:scale-105"
+          >
+            <img
+              src="https://www.svgrepo.com/show/355037/google.svg"
+              alt="Google logo"
+              className="w-5 h-5 mr-2"
+            />
+            Sign in with Google
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default Register;
