@@ -37,6 +37,7 @@ export default [
       "react/jsx-props-no-spreading": "warn",
       "react/prop-types": "off",
       "react/jsx-no-target-blank": "off",
+      "no-useless-escape": "off",
     },
   },
 ];

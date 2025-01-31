@@ -1,52 +1,31 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link, useLocation } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { authenticateUser } from "../services/apiUsers";
 import toast, { Toaster } from "react-hot-toast";
-import useAuth from "../hooks/useAuth";
 
 const Login = () => {
-  const { setAuth } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
 
   const userRef = useRef();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
 
-  useEffect(() => {
-    userRef.current.focus();
-  }, []);
+  const queryClient = useQueryClient();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axios.post(
-        "/api/v1/user/login",
-        JSON.stringify({ email, password }),
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
-
-      console.log(response.data);
-      const accessToken = response?.data?.data.accessToken;
-      const userId = response.data.data.user._id;
-      console.log(userId);
-      setAuth({ email, accessToken, userId });
-
+  const { mutate: loginUser } = useMutation({
+    mutationFn: (user) => authenticateUser(user),
+    onSuccess: (data) => {
+      console.log("spdjpondfoidnfv", data);
       toast.success("User Login Successfully!");
-
-      setTimeout(() => {
-        navigate(from, { replace: true });
-      }, 2000);
+      queryClient.setQueryData(["user"], data.data.user);
 
       setEmail("");
       setPassword("");
-    } catch (err) {
+      navigate("/container/profile");
+    },
+    onError: (err) => {
       if (!err) {
         toast.error("No Server Response");
       } else if (err.response?.status === 400) {
@@ -56,18 +35,31 @@ const Login = () => {
       } else if (err.response?.status === 404) {
         toast.error("Unauthorized request!");
       }
-    }
+    },
+  });
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    loginUser({ email, password });
   };
 
   return (
-    
     <div className="min-h-screen flex items-center justify-center bg-[#EDF2F7] ">
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-sm m-10">
-        <h1 className="text-3xl font-semibold text-[#2E66E5] mb-8">Welcome Back!</h1>
+        <h1 className="text-3xl font-semibold text-[#2E66E5] mb-8">
+          Welcome Back!
+        </h1>
 
         <form className="space-y-6" onSubmit={handleLogin}>
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email address
             </label>
             <input
@@ -83,7 +75,10 @@ const Login = () => {
           </div>
 
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div className="relative">
@@ -112,7 +107,10 @@ const Login = () => {
                 type="checkbox"
                 className="h-4 w-4 text-[#2E66E5] focus:ring-[#2E66E5] border-gray-300 rounded"
               />
-              <label htmlFor="remember" className="ml-2 block text-sm text-gray-700">
+              <label
+                htmlFor="remember"
+                className="ml-2 block text-sm text-gray-700"
+              >
                 Remember for 30 days
               </label>
             </div>
@@ -143,7 +141,7 @@ const Login = () => {
           </button>
 
           <p className="text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Do nott have an account?{" "}
             <Link to="/register" className="text-[#2E66E5] hover:underline">
               Sign up
             </Link>
@@ -152,7 +150,6 @@ const Login = () => {
       </div>
       <Toaster />
     </div>
-
   );
 };
 

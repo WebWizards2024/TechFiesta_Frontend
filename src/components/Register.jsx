@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { createUser } from "../services/apiUsers";
 
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
@@ -15,6 +17,25 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false); // State for password visibility
   const [errMsg, setErrMsg] = useState("");
 
+  const { mutate: createNewUser } = useMutation({
+    mutationFn: (newUser) => createUser(newUser),
+    onSuccess: () => {
+      toast.success("User Registered Successfully");
+      setFullName("");
+      setPwd("");
+      setEmail("");
+      navigate("/login");
+    },
+    onError: (err) => {
+      if (!err) {
+        return err;
+      } else if (err.response?.status === 409) {
+        toast.error("User with email or username already exists");
+        return err;
+      }
+    },
+  });
+
   useEffect(() => {
     userRef.current.focus();
   }, []);
@@ -22,7 +43,9 @@ const Register = () => {
   const handleRegister = async () => {
     // Password Validation
     if (!PWD_REGEX.test(pwd)) {
-      toast.error("Password must be 8-24 characters, containing uppercase and lowercase letters, a number, and a special character.");
+      toast.error(
+        "Password must be 8-24 characters, containing uppercase and lowercase letters, a number, and a special character."
+      );
       return;
     }
 
@@ -32,32 +55,7 @@ const Register = () => {
       return;
     }
 
-    try {
-      const response = await axios.post(
-        "/api/v1/user/register",
-        JSON.stringify({ fullName, email, password: pwd }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          withCredentials: true,
-        }
-      );
-
-      console.log(response?.data);
-      toast.success("User Registered Successfully");
-      navigate("/login");
-
-      setFullName("");
-      setPwd("");
-      setEmail("");
-    } catch (err) {
-      if (!err) {
-        toast.error("No Server Response");
-      } else if (err.response?.status === 409) {
-        toast.error("User with email or username already exists");
-      }
-    }
+    createNewUser({ email, fullName, pwd });
   };
 
   return (
@@ -66,12 +64,17 @@ const Register = () => {
 
       {/* Sign Up Form */}
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-sm m-10">
-        <h1 className="text-2xl font-semibold text-[#2E66E5] mb-8 font-poppins">Sign Up</h1>
+        <h1 className="text-2xl font-semibold text-[#2E66E5] mb-8 font-poppins">
+          Sign Up
+        </h1>
 
         <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
           {/* Name Field */}
           <div className="space-y-2">
-            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="fullName"
+              className="block text-sm font-medium text-gray-700"
+            >
               Full Name
             </label>
             <div className="relative">
@@ -89,7 +92,10 @@ const Register = () => {
 
           {/* Email Field */}
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700"
+            >
               Email Address
             </label>
             <div className="relative">
@@ -106,7 +112,10 @@ const Register = () => {
 
           {/* Password Field */}
           <div className="space-y-2">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-gray-700"
+            >
               Password
             </label>
             <div className="relative">
