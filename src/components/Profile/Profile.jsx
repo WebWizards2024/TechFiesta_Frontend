@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 function Profile() {
   const navigate = useNavigate();
   return (
-    <div className="h-screen w-screen overflow-auto bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="h-screen  overflow-auto bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           {/* Profile Header */}

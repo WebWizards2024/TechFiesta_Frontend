@@ -1,35 +1,127 @@
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 const Solution = () => {
+  const [article, setArticle] = useState({
+    title: "Loading...",
+    description: "Fetching AI-generated content...",
+  });
+  const [videoUrls, setVideoUrls] = useState({ video1: "", video2: "" }); // Store two video URLs
+
+  // Helper function to extract YouTube video ID from URL
+  const getYouTubeVideoId = (url) => {
+    const regex = /(?:https?:\/\/(?:www\.)?youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|(?:watch\?v=))([a-zA-Z0-9_-]{11}))/;
+    const match = url.match(regex);
+    return match ? match[1] : null;
+  };
+
+  useEffect(() => {
+    axios
+      .post(
+        "/api/v1/document/generate-documentation",
+        { disease: "hypertension" },
+        { withCredentials: true }
+      )
+      .then((res) => {
+        const generatedData = res.data.data.generatedResponse;
+
+        console.log("API Response:", generatedData); // Debugging
+
+        let title = "AI Generated Title"; // Default title
+        let description = "AI Generated Description";
+
+        const titleMatch = generatedData.match(/\*\*Title:\s*(.*?)\*\*/);
+        if (titleMatch) {
+          title = titleMatch[1].trim();
+        } else {
+          const boldMatches = generatedData.match(/\*\*(.*?)\*\*/);
+          if (boldMatches) {
+            title = boldMatches[1].trim();
+          } else {
+            const firstLine = generatedData.split("\n")[0].trim();
+            if (firstLine.length > 3) title = firstLine;
+          }
+        }
+
+        description = generatedData.replace(`**${title}**`, "").trim();
+
+        setArticle({ title, description });
+      })
+      .catch((error) => {
+        console.error(error);
+        setArticle({
+          title: "Error fetching data",
+          description: "There was an error retrieving the data.",
+        });
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .post("/api/v1/video-generator", { disease: "hypertension" }, { withCredentials: true })
+      .then((res) => {
+        const videos = res.data.data.videos;
+        if (videos.length > 0) {
+          setVideoUrls({
+            video1: videos[0].url,
+            video2: videos[1]?.url || "", // Fallback to empty string if second video is not available
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
   return (
-    <div className="container mx-auto p-4 space-y-6 max-w-4xl overflow-auto h-screen">
+    <div className="container mx-auto p-6 space-y-6 max-w-4xl overflow-auto h-screen">
       {/* Video Cards Section */}
       <div className="grid gap-6 md:grid-cols-2">
+        {/* First Video Card */}
         <div className="rounded-lg shadow-lg overflow-hidden bg-white">
           <div className="relative aspect-video">
-            <img
-              src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?q=80&w=600"
-              alt="Meditation in nature"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100">
-                <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-black border-b-8 border-b-transparent ml-1" />
-              </div>
-            </div>
+            {videoUrls.video1 ? (
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${getYouTubeVideoId(videoUrls.video1)}`}
+                title="YouTube Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full object-cover"
+              ></iframe>
+            ) : (
+              <img
+                src="https://images.unsplash.com/photo-1508672019048-805c876b67e2?q=80&w=600"
+                alt="Meditation in nature"
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
         </div>
 
+        {/* Second Video Card */}
         <div className="rounded-lg shadow-lg overflow-hidden bg-white">
           <div className="relative aspect-video">
-            <img
-              src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600"
-              alt="Fresh produce"
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center cursor-pointer hover:bg-gray-100">
-                <div className="w-0 h-0 border-t-8 border-t-transparent border-l-12 border-l-black border-b-8 border-b-transparent ml-1" />
-              </div>
-            </div>
+            {videoUrls.video2 ? (
+              <iframe
+                width="100%"
+                height="100%"
+                src={`https://www.youtube.com/embed/${getYouTubeVideoId(videoUrls.video2)}`}
+                title="YouTube Video"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full object-cover"
+              ></iframe>
+            ) : (
+              <img
+                src="https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=600"
+                alt="Fresh produce"
+                className="w-full h-full object-cover"
+              />
+            )}
           </div>
         </div>
       </div>
@@ -54,20 +146,16 @@ const Solution = () => {
           </svg>
         </div>
         <ul className="space-y-3">
-          <li>• Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-          <li>• Integer vitae libero ac risus varius venenatis non ut lorem.</li>
-          <li>• Curabitur ultricies lacus vel nulla interdum tincidunt.</li>
-          <li>• Sed id nunc et nibh faucibus scelerisque.</li>
-          <li>• Pellentesque habitant morbi tristique senectus et netus et malesuada fames.</li>
-          <li>• Nunc feugiat turpis sed magna dictum malesuada.</li>
-          <li>• Sed id nunc et nibh faucibus scelerisque.</li>
-          <li>• Pellentesque habitant morbi tristique senectus et netus et malesuada fames.</li>
-          <li>• Nunc feugiat turpis sed magna dictum malesuada.</li>
+          <li>• Reduce sodium intake and eat a balanced diet.</li>
+          <li>• Engage in regular physical activity.</li>
+          <li>• Manage stress levels effectively.</li>
+          <li>• Monitor blood pressure regularly.</li>
+          <li>• Maintain a healthy weight.</li>
         </ul>
       </div>
 
       {/* Article Section */}
-      <div className="rounded-lg shadow-lg bg-white p-6">
+      <div className="rounded-lg shadow-lg bg-white p-6 mb-10">
         <div className="flex flex-col md:flex-row gap-6">
           <div className="md:w-1/3">
             <img
@@ -77,33 +165,20 @@ const Solution = () => {
             />
           </div>
           <div className="md:w-2/3">
-            <h2 className="text-2xl font-bold mb-4">Title of an Article</h2>
-            <p className="text-gray-600">
-              Seamlessly organize and manage all your medical records in one secure location. Powered by MongoDB
-              technology, our system ensures your data is stored efficiently, accessible at any time, and always
-              protected with state-of-the-art security measures. Easily share your medical records with our trusted
-              network of healthcare professionals. Gain valuable insights through our innovative features tailored to
-              your needs by qualified medical experts Log in securely with your unique credentials to access your
-              complete medical history.
-            </p>
+            <h2 className="text-2xl font-bold mb-4">{article.title}</h2>
+            <div
+              className="text-gray-700 space-y-3"
+              dangerouslySetInnerHTML={{
+                __html: article.description
+                  .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>") // Convert **bold** to <strong>
+                  .replace(/\n/g, "<br/>"), // Preserve line breaks
+              }}
+            />
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Solution
-
-/* Add these styles to your index.css or App.css file */
-/* 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@layer utilities {
-  .border-l-12 {
-    border-left-width: 12px;
-  }
-}
-*/
+export default Solution;

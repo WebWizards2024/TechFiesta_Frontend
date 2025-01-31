@@ -1,41 +1,87 @@
-import { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const EMAIL_REGEX = /^[\w\.-]+@[a-zA-Z\d\.-]+\.[a-zA-Z]{2,}$/;
 
 const Register = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+  const userRef = useRef();
+  const [email, setEmail] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility
+  const [errMsg, setErrMsg] = useState("");
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  const handleRegister = async () => {
+    // Password Validation
+    if (!PWD_REGEX.test(pwd)) {
+      toast.error("Password must be 8-24 characters, containing uppercase and lowercase letters, a number, and a special character.");
+      return;
+    }
+
+    // Email Validation
+    if (!EMAIL_REGEX.test(email)) {
+      toast.error("Enter Valid Email");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "/api/v1/user/register",
+        JSON.stringify({ fullName, email, password: pwd }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log(response?.data);
+      toast.success("User Registered Successfully");
+      navigate("/login");
+
+      setFullName("");
+      setPwd("");
+      setEmail("");
+    } catch (err) {
+      if (!err) {
+        toast.error("No Server Response");
+      } else if (err.response?.status === 409) {
+        toast.error("User with email or username already exists");
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center">
-      {/* Logo */}
-      
+    <div className="min-h-screen bg-[#EDF2F7] flex flex-col items-center justify-center">
+      {/* Logo (if needed) */}
 
       {/* Sign Up Form */}
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-sm m-10">
-        <h1 className="text-3xl font-semibold text-[#2E66E5] mb-8">Sign Up</h1>
+        <h1 className="text-2xl font-semibold text-[#2E66E5] mb-8 font-poppins">Sign Up</h1>
 
-        <form className="space-y-6">
-          {/* Name Fields */}
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="space-y-2">
-              <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
-                First name
-              </label>
+        <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          {/* Name Field */}
+          <div className="space-y-2">
+            <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
+              Full Name
+            </label>
+            <div className="relative">
               <input
-                id="firstName"
+                id="fullName"
                 type="text"
-                placeholder="John"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">
-                Last name
-              </label>
-              <input
-                id="lastName"
-                type="text"
-                placeholder="Doe"
+                placeholder="John Sarfare"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                ref={userRef}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
               />
             </div>
@@ -44,14 +90,18 @@ const Register = () => {
           {/* Email Field */}
           <div className="space-y-2">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-              Email address
+              Email Address
             </label>
-            <input
-              id="email"
-              type="email"
-              placeholder="example@gmail.com"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
-            />
+            <div className="relative">
+              <input
+                id="email"
+                type="email"
+                placeholder="example@gmail.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
+              />
+            </div>
           </div>
 
           {/* Password Field */}
@@ -62,36 +112,18 @@ const Register = () => {
             <div className="relative">
               <input
                 id="password"
-                type={showPassword ? "text" : "password"}
+                type={showPassword ? "text" : "password"} // Toggle between text and password input types
+                value={pwd}
+                onChange={(e) => setPwd(e.target.value)}
+                placeholder="********"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() => setShowPassword(!showPassword)} // Toggle showPassword state
                 className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-[#2E66E5] transition"
               >
-                {showPassword ? "🙈" : "👁"}
-              </button>
-            </div>
-          </div>
-
-          {/* Confirm Password Field */}
-          <div className="space-y-2">
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-              Confirm password
-            </label>
-            <div className="relative">
-              <input
-                id="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] transition-transform duration-200 ease-in-out focus:scale-105"
-              />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="absolute inset-y-0 right-2 flex items-center text-gray-500 hover:text-[#2E66E5] transition"
-              >
-                {showConfirmPassword ? "🙈" : "👁"}
+                {showPassword ? "🙈" : "👁"} {/* Show/Hide password button */}
               </button>
             </div>
           </div>
@@ -111,9 +143,10 @@ const Register = () => {
           {/* Sign Up Button */}
           <button
             type="submit"
+            onClick={handleRegister}
             className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-[#2E66E5] hover:bg-[#2E66E5]/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2E66E5] transform transition-transform duration-200 ease-in-out hover:scale-105"
           >
-            Sign up
+            Sign Up
           </button>
 
           {/* Google Sign In */}
@@ -130,6 +163,9 @@ const Register = () => {
           </button>
         </form>
       </div>
+
+      {/* Toast notifications */}
+      <Toaster />
     </div>
   );
 };

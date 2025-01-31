@@ -6,8 +6,11 @@ function Container() {
     return (
         <>
             <div className='flex'>
-                <Sidebar  className='fixed top-0 left-0'/>
-                <Outlet/>
+                <Sidebar className='fixed top-0 left-0' />
+                <div className='w-screen m-10'>
+                    <Outlet />
+                </div>
+
             </div>
         </>
     )

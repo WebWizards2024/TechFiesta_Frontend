@@ -1,14 +1,71 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false)
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
+  const userRef = useRef();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "/api/v1/user/login",
+        JSON.stringify({ email, password }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      console.log(response.data);
+      const accessToken = response?.data?.data.accessToken;
+      const userId = response.data.data.user._id;
+      console.log(userId);
+      setAuth({ email, accessToken, userId });
+
+      toast.success("User Login Successfully!");
+
+      setTimeout(() => {
+        navigate(from, { replace: true });
+      }, 2000);
+
+      setEmail("");
+      setPassword("");
+    } catch (err) {
+      if (!err) {
+        toast.error("No Server Response");
+      } else if (err.response?.status === 400) {
+        toast.error("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        toast.error("Invalid User Credentials.");
+      } else if (err.response?.status === 404) {
+        toast.error("Unauthorized request!");
+      }
+    }
+  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 m-10">
-      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-sm">
+    
+    <div className="min-h-screen flex items-center justify-center bg-[#EDF2F7] ">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-sm m-10">
         <h1 className="text-3xl font-semibold text-[#2E66E5] mb-8">Welcome Back!</h1>
 
-        <form className="space-y-6">
+        <form className="space-y-6" onSubmit={handleLogin}>
           <div className="space-y-2">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email address
@@ -17,6 +74,10 @@ const Login = () => {
               id="email"
               type="email"
               placeholder="example@gmail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              ref={userRef}
+              required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] focus:shadow-lg transition-all duration-300"
             />
           </div>
@@ -29,6 +90,9 @@ const Login = () => {
               <input
                 id="password"
                 type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#2E66E5] focus:shadow-lg transition-all duration-300 pr-10"
               />
               <button
@@ -36,7 +100,7 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-all duration-300"
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword ? "🙈" : "👁"}
               </button>
             </div>
           </div>
@@ -80,14 +144,16 @@ const Login = () => {
 
           <p className="text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <a href="#" className="text-[#2E66E5] hover:underline">
+            <Link to="/register" className="text-[#2E66E5] hover:underline">
               Sign up
-            </a>
+            </Link>
           </p>
         </form>
       </div>
+      <Toaster />
     </div>
-  )
-}
+
+  );
+};
 
 export default Login;
