@@ -5,7 +5,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 import { AuthProvider } from './context/AuthProvider'
 import Solution from './components/Solution/Solution'
-import Community from  './components/Community/Community'
+import Community from './components/Community/Community'
 import Dashboard from './components/Dashboard/Dashboard';
 import Profile from './components/Profile/Profile'
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -17,7 +17,10 @@ import Container from "./components/Container/Container";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import ProfileEditForm from './components/Profile/ProfileEditForm'
-
+import DiseaseInput from './components/DiseaseInput/DiseaseInput';
+import Chart from './components/Chart/Chart';
+import Dashboard_new from './components/Chart/Dashboard_new';
+import RequireAuth from './components/RequireAuth';
 
 
 const queryClient = new QueryClient({
@@ -35,23 +38,31 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={true} />
       <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            
+            {/* <Route path="/new" element={<Dashboard_new />} /> */}
+            {/* Parent Route */}
 
-          {/* Parent Route */}
-          <Route path="/container" element={<Container />}>
-            {/* Child Routes (Fix: Remove leading /) */}
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="editprofile" element={<ProfileEditForm />} />
-            <Route path="solution" element={<Solution />} />
-            <Route path="community" element={<Community />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+            <Route element={<RequireAuth />}>
+              <Route path="/container" element={<Container />}>
+                {/* Child Routes (Fix: Remove leading /) */}
+                {/* <Route path="dashboard" element={<Dashboard />} /> */}
+                <Route path="profile" element={<Profile />} />
+                <Route path="editprofile" element={<ProfileEditForm />} />
+                <Route path="diagnostic" element={<DiseaseInput />} />
+                <Route path="dashboard" element={<Chart />} />
+                <Route path="solution" element={<Solution />} />
+                <Route path="community" element={<Community />} />
+              </Route>
+            </Route>
+
+
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </QueryClientProvider>
 

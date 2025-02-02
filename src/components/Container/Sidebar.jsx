@@ -53,7 +53,7 @@ const Sidebar = () => {
     { icon: Home, label: "Home", path: "/" },
     { icon: User, label: "Profile", path: "profile" },
     { icon: LayoutDashboard, label: "Dashboard", path: "dashboard" },
-    { icon: FileText, label: "Diagnostic Data Info", path: "/diagnostic" },
+    { icon: FileText, label: "Diagnostic Data Info", path: "diagnostic" },
     { icon: Lightbulb, label: "Solution", path: "solution" },
     { icon: Users, label: "Community Help", path: "community" },
     { icon: Download, label: "Export Data", path: "/export" },
@@ -132,7 +132,7 @@ const Sidebar = () => {
                   variants={textVariants}
                   className="font-medium ml-3 whitespace-nowrap"
                 >
-                  {myState.fullName}
+                 {myState.fullName}
                 </motion.span>
               </motion.div>
             </div>

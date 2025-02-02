@@ -40,7 +40,8 @@ const Community = () => {
   ]
 
   return (
-    <div className="max-w-2xl mx-auto p-6 font-sans w-screen h-screen overflow-auto">
+    
+    <div className="h-screen  overflow-auto bg-gray-50 py-8 px-4">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Community Discussions</h1>
 
       <div className="space-y-4">
