@@ -1,5 +1,7 @@
 import { MessageCircle } from "lucide-react"
 
+
+
 const DiscussionItem = ({ title, author, replies }) => {
   return (
     <div className="bg-blue-50 rounded-lg p-4 flex justify-between items-center hover:bg-blue-100 transition-colors duration-200">
@@ -16,6 +18,8 @@ const DiscussionItem = ({ title, author, replies }) => {
 }
 
 const Community = () => {
+
+  
   const discussions = [
     {
       title: "Tips and Suggestions (title)",
@@ -44,6 +48,7 @@ const Community = () => {
     <div className="h-screen  overflow-auto bg-gray-50 py-8 px-4">
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Community Discussions</h1>
 
+
       <div className="space-y-4">
         {discussions.map((discussion, index) => (
           <DiscussionItem
@@ -58,6 +63,7 @@ const Community = () => {
       <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg mt-6 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
         View More Discussions
       </button>
+      
     </div>
   )
 }

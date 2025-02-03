@@ -21,7 +21,7 @@ import DiseaseInput from './components/DiseaseInput/DiseaseInput';
 import Chart from './components/Chart/Chart';
 import Dashboard_new from './components/Chart/Dashboard_new';
 import RequireAuth from './components/RequireAuth';
-
+import PersistLogin from './components/PersistLogin'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,13 +40,15 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
+          <Route element={<PersistLogin/>}>
             <Route path="/" element={<Home />} />
+            </Route>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             
             <Route path="/new" element={<Dashboard_new />} />
             {/* Parent Route */}
-
+          <Route element={<PersistLogin/>}>
             <Route element={<RequireAuth />}>
               <Route path="/container" element={<Container />}>
                 {/* Child Routes (Fix: Remove leading /) */}
@@ -59,6 +61,7 @@ function App() {
                 <Route path="community" element={<Community />} />
               </Route>
             </Route>
+          </Route>
 
 
           </Routes>

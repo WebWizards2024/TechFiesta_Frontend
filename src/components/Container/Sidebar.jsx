@@ -132,7 +132,7 @@ const Sidebar = () => {
                   variants={textVariants}
                   className="font-medium ml-3 whitespace-nowrap"
                 >
-                 {myState.fullName}
+                 {/* {myState.fullName} */}
                 </motion.span>
               </motion.div>
             </div>

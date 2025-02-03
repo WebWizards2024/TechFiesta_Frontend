@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
 import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-
+import useAuth from "../../hooks/useAuth";
 const HealthGraph = () => {
   const [healthData, setHealthData] = useState({});
   const [inputData, setInputData] = useState({});
@@ -10,10 +10,12 @@ const HealthGraph = () => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({}); // Stores updated values in required format
 
+  const { auth } = useAuth()
+
   const queryClient = useQueryClient();
   const myState = queryClient.getQueryData(["user"]);
 
-  const userId = myState._id;
+  const userId = auth.user_id;
   console.log(userId) // Hardcoded user ID
 
   // Fetch existing health data

@@ -12,7 +12,7 @@ function RequireAuth() {
     
     console.log("fgfdg : ",myState);
     return (
-        myState
+        auth.accessToken
             ? <Outlet />
             :
             <Navigate to="/login" state={{ from: location }} replace />
