@@ -5,6 +5,7 @@ import { authenticateUser } from "../services/apiUsers";
 import useAuth from '../hooks/useAuth.js'
 import toast, { Toaster } from "react-hot-toast";
 
+
 const Login = () => {
 
   const { setAuth } = useAuth()
@@ -25,6 +26,7 @@ const Login = () => {
     onSuccess: (data) => {
       // console.log("spdjpondfoidnfv", data);
       toast.success("User Login Successfully!");
+      console.log(data.data);
       queryClient.setQueryData(["user"], data.data.user);
       setTimeout(() => {
         navigate(from, { replace: true })                

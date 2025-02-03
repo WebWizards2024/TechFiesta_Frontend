@@ -7,8 +7,10 @@ function Container() {
         <>
             <div className='flex'>
                 <Sidebar className='fixed top-0 left-0' />
-                <div className='w-screen m-10'>
-                    <Outlet />
+                <div className='w-screen bg-white'>
+                    <div className='m-10 '>
+                        <Outlet />
+                    </div>
                 </div>
 
             </div>

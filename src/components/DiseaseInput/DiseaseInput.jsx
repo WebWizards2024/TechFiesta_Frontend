@@ -1,11 +1,15 @@
 import { useState } from "react";
 import { PlusCircle, X } from "lucide-react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 export default function DiseaseInput() {
   const [disease, setDisease] = useState("");
   const [healthData, setHealthData] = useState({});
   const [symptoms, setSymptoms] = useState("");
   const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "" }]);
+  const queryClient = useQueryClient();
+  const myState = queryClient.getQueryData(["user"]);
+
 
   const diseaseParameters = {
     Diabetes: ["Blood Sugar", "HbA1c", "Blood Pressure"],
@@ -46,7 +50,7 @@ export default function DiseaseInput() {
     e.preventDefault();
 
     // Assuming you get patientId from user authentication
-    const patientId = "67947f6157ad3640a7ac95d4";
+    const patientId = myState._id;
 
     const formData = { disease, healthData, symptoms, medications, patientId };
 
@@ -73,8 +77,8 @@ export default function DiseaseInput() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-4xl bg-white shadow-2xl rounded-3xl p-8 space-y-8">
+    <div className="min-h-screen  flex items-center justify-center p-4 bg-white">
+      <form onSubmit={handleSubmit} className="w-full max-w-4xl bg-white  rounded-3xl p-8 space-y-8">
         <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 text-center">Health Data Input</h2>
 
         {/* Disease Selection */}
@@ -179,7 +183,7 @@ export default function DiseaseInput() {
         </div> */}
 
         {/* Submit Button */}
-        <button type="submit" className="w-full bg-green-500 text-white p-4 rounded-lg text-lg font-semibold hover:bg-green-600 transition duration-200">
+        <button type="submit" className="w-full bg-[#2B6CB0] text-white p-4 rounded-lg text-lg font-semibold hover:bg-[#3f5d7d] transition duration-200">
           Submit Health Data
         </button>
       </form>

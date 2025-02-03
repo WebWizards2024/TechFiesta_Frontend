@@ -44,7 +44,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
             
-            {/* <Route path="/new" element={<Dashboard_new />} /> */}
+            <Route path="/new" element={<Dashboard_new />} />
             {/* Parent Route */}
 
             <Route element={<RequireAuth />}>
@@ -54,7 +54,7 @@ function App() {
                 <Route path="profile" element={<Profile />} />
                 <Route path="editprofile" element={<ProfileEditForm />} />
                 <Route path="diagnostic" element={<DiseaseInput />} />
-                <Route path="dashboard" element={<Chart />} />
+                <Route path="dashboard" element={<Dashboard />} />
                 <Route path="solution" element={<Solution />} />
                 <Route path="community" element={<Community />} />
               </Route>
