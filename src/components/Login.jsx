@@ -1,12 +1,19 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link , useLocation } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authenticateUser } from "../services/apiUsers";
+import useAuth from '../hooks/useAuth.js'
 import toast, { Toaster } from "react-hot-toast";
 
-const Login = () => {
-  const navigate = useNavigate();
 
+const Login = () => {
+
+  const { setAuth } = useAuth()
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || "/"
+
+  
   const userRef = useRef();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,12 +24,15 @@ const Login = () => {
   const { mutate: loginUser } = useMutation({
     mutationFn: (user) => authenticateUser(user),
     onSuccess: (data) => {
+      console.log("spdjpondfoidnfv", data);
       toast.success("User Login Successfully!");
+      console.log(data.data);
       queryClient.setQueryData(["user"], data.data.user);
-
+      setTimeout(() => {
+        navigate(from, { replace: true })                
+    }, 2000);
       setEmail("");
       setPassword("");
-      navigate("/container/profile");
     },
     onError: (err) => {
       if (!err) {

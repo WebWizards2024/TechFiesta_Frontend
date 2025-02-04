@@ -47,7 +47,7 @@ const Sidebar = () => {
 
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData(["user"]);
-  
+
   const navigate = useNavigate();
   useEffect(() => {
     if (!user) {
@@ -61,7 +61,7 @@ const Sidebar = () => {
     { icon: User, label: "Profile", path: "profile" },
     { icon: LayoutDashboard, label: "Dashboard", path: "dashboard" },
     { icon: FileText, label: "Diagnostic Data Info", path: "/diagnostic" },
-    { icon: FileText, label: "Alerts & Reminders", path: "reminders" },
+    { icon: Users, label: "Reminders", path: "reminders" },
     { icon: Lightbulb, label: "Solution", path: "solution" },
     { icon: Users, label: "Community Help", path: "community" },
     { icon: Download, label: "Export Data", path: "/export" },
