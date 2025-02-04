@@ -17,7 +17,6 @@ const Login = () => {
   const { mutate: loginUser } = useMutation({
     mutationFn: (user) => authenticateUser(user),
     onSuccess: (data) => {
-      console.log("spdjpondfoidnfv", data);
       toast.success("User Login Successfully!");
       queryClient.setQueryData(["user"], data.data.user);
 

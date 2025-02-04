@@ -37,7 +37,6 @@ export async function createUser(newUser) {
 }
 
 export async function authenticateUser(user) {
-  console.log("spdnf");
   const { email, password } = user;
   const response = await axios.post(
     "/api/v1/user/login",

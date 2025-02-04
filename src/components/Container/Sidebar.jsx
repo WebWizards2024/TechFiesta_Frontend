@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import profileimg from "../../assets/profileimg.png";
@@ -44,16 +44,24 @@ const styles = `
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeItem, setActiveItem] = useState("Community Help");
-  const navigate = useNavigate(); // React Router navigation
 
   const queryClient = useQueryClient();
-  const myState = queryClient.getQueryData(["user"]);
+  const user = queryClient.getQueryData(["user"]);
+  
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user) {
+      console.log("Please login to continue");
+      navigate("/login");
+    }
+  }, [user, navigate]);
 
   const menuItems = [
     { icon: Home, label: "Home", path: "/" },
     { icon: User, label: "Profile", path: "profile" },
     { icon: LayoutDashboard, label: "Dashboard", path: "dashboard" },
     { icon: FileText, label: "Diagnostic Data Info", path: "/diagnostic" },
+    { icon: FileText, label: "Alerts & Reminders", path: "reminders" },
     { icon: Lightbulb, label: "Solution", path: "solution" },
     { icon: Users, label: "Community Help", path: "community" },
     { icon: Download, label: "Export Data", path: "/export" },
@@ -132,7 +140,7 @@ const Sidebar = () => {
                   variants={textVariants}
                   className="font-medium ml-3 whitespace-nowrap"
                 >
-                  {myState.fullName}
+                  {user.fullName}
                 </motion.span>
               </motion.div>
             </div>
