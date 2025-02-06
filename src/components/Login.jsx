@@ -1,19 +1,20 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, Link , useLocation } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { authenticateUser } from "../services/apiUsers";
-import useAuth from '../hooks/useAuth.js'
+import { authenticateUser, signInWithGoogle } from "../services/apiUsers";
 import toast, { Toaster } from "react-hot-toast";
-
+import useAuth from "../hooks/useAuth";
+import {
+  useSession,
+  useSessionContext,
+  useSupabaseClient,
+} from "@supabase/auth-helpers-react";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
 
-  const { setAuth } = useAuth()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const from = location.state?.from?.pathname || "/"
-
-  
   const userRef = useRef();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -29,8 +30,8 @@ const Login = () => {
       console.log(data.data);
       queryClient.setQueryData(["user"], data.data.user);
       setTimeout(() => {
-        navigate(from, { replace: true })                
-    }, 2000);
+        navigate(from, { replace: true });
+      }, 2000);
       setEmail("");
       setPassword("");
     },
@@ -47,9 +48,22 @@ const Login = () => {
     },
   });
 
+  const session = useSession();
+  const supabase = useSupabaseClient();
+  const { mutate: googleSignIn } = useMutation({
+    mutationFn: (supabase) => signInWithGoogle(supabase),
+    onSuccess: () => {},
+    onError: () => {},
+  });
+
   useEffect(() => {
     userRef.current.focus();
   }, []);
+
+  function loginWithGoogle(e) {
+    e.preventDefault();
+    googleSignIn(supabase);
+  }
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -137,6 +151,7 @@ const Login = () => {
 
           <button
             type="button"
+            onClick={loginWithGoogle}
             className="w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#2E66E5] transition-all duration-300 transform hover:scale-105 active:scale-95"
           >
             <div className="flex items-center justify-center">

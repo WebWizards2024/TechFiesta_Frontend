@@ -45,16 +45,10 @@ const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [activeItem, setActiveItem] = useState("Community Help");
 
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData(["user"]);
-
-  const navigate = useNavigate();
-  useEffect(() => {
-    if (!user) {
-      console.log("Please login to continue");
-      navigate("/login");
-    }
-  }, [user, navigate]);
+  const googleLoggedInUser = queryClient.getQueryData(["googleAuthUser"]);
 
   const menuItems = [
     { icon: Home, label: "Home", path: "/" },
@@ -104,7 +98,6 @@ const Sidebar = () => {
     <>
       {/* Add styles to the document */}
       <style>{styles}</style>
-
       <div className="flex min-h-screen bg-gray-50">
         <motion.div
           initial="open"
@@ -140,7 +133,7 @@ const Sidebar = () => {
                   variants={textVariants}
                   className="font-medium ml-3 whitespace-nowrap"
                 >
-                  {user.fullName}
+                  {user.fullName || googleLoggedInUser.full_name}
                 </motion.span>
               </motion.div>
             </div>

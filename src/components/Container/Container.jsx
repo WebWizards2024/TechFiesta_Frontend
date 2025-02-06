@@ -7,13 +7,13 @@ function Container() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const user = queryClient.getQueryData(["user"]);
-
+  const googleAuthUser = queryClient.getQueryData(["googleAuthUser"]);
   useEffect(() => {
-    if (!user) {
+    if (!user && !googleAuthUser?.provider_id) {
       console.log("Please login to continue");
       navigate("/login"); // Ensure it's an absolute path
     }
-  }, [user, navigate]);
+  }, [user, googleAuthUser, navigate]);
 
   return (
     <>

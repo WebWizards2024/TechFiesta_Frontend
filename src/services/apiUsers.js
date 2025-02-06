@@ -1,3 +1,4 @@
+import { useSession } from "@supabase/auth-helpers-react";
 import axios from "axios";
 
 const url = "https://dummyjson.com/users";
@@ -34,6 +35,20 @@ export async function createUser(newUser) {
   );
   if (response.statusCode === 401) throw new Error("Error, ", response.message);
   return response?.data;
+}
+
+export async function signInWithGoogle(supabase) {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      scopes: "https://www.googleapis.com/auth/calendar",
+    },
+  });
+  if (error) {
+    console.log(error);
+    alert("Error logging in with google");
+  }
+  return;
 }
 
 export async function authenticateUser(user) {

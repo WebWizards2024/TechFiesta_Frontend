@@ -16,7 +16,7 @@ import Container from "./components/Container/Container";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import ProfileEditForm from './components/Profile/ProfileEditForm'
-import Reminders from "./components/Remainders/Reminders";
+import Reminders from "./components/Reminders/Reminders";
 
 
 
