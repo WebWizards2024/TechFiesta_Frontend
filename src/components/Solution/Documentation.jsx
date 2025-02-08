@@ -71,7 +71,7 @@ export default function DiseaseDocs() {
       ${article.about}
       
       Remedies
-      ${article.remedies.map((remedy) => `- ${remedy.name}: ${remedy.description}`).join("\n")}
+      ${article.remedies.map((remedy) =>`- ${remedy.name}: ${remedy.description}`).join("\n")}
       
       Future Threats
       ${article.future_threats}

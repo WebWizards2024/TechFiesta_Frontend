@@ -1,45 +1,48 @@
-import { Outlet } from 'react-router-dom'
-import { useState, useEffect } from "react"
-import useRefreshToken from "../hooks/useRefreshToken.js"
-import useAuth from '../hooks/useAuth.js'
-import "../App.css"
-
+import { Outlet } from "react-router-dom";
+import { useState, useEffect } from "react";
+import useRefreshToken from "../hooks/useRefreshToken.js";
+import useAuth from "../hooks/useAuth.js";
+import "../App.css";
+import { useQueryClient } from "@tanstack/react-query";
+import { getUserHealthData } from "../services/apiUsers.js";
 
 const PersistLogin = () => {
-    const [isLoading, setIsLoading] = useState(true)
-    const refresh = useRefreshToken()
-    const { auth, persist } = useAuth()
+  const [isLoading, setIsLoading] = useState(true);
+  const refresh = useRefreshToken();
+  const { auth } = useAuth();
+  const queryClient = useQueryClient();
+  queryClient.setQueryData(["auth"], auth);
 
-    useEffect(() => {
-        const verifyRefreshToken = async () => {
-            try {
-                await refresh()
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setIsLoading(false)
-            }
-        }
+  useEffect(() => {
+    const verifyRefreshToken = async () => {
+      try {
+        await refresh();
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-        !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false)
-    }, [])
+    !auth?.accessToken ? verifyRefreshToken() : setIsLoading(false);
+  }, []);
 
-    useEffect(() => {
-        console.log(`is loading : ${isLoading}`);
-        console.log(`At : ${JSON.stringify(auth?.accessToken)}`);
-    }, [isLoading])
+  useEffect(() => {
+    console.log(`is loading : ${isLoading}`);
+    console.log(`At : ${JSON.stringify(auth?.accessToken)}`);
+  }, [isLoading]);
 
-    return (
-        <>
-            {
-                isLoading
-                    ? <div className='flex justify-center  items-center h-screen w-screen'>
-                        <span className="loader "></span>
-                    </div>
-                    : <Outlet />
-            }
-        </>
-    )
-}
+  return (
+    <>
+      {isLoading ? (
+        <div className="flex justify-center  items-center h-screen w-screen">
+          <span className="loader "></span>
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </>
+  );
+};
 
-export default PersistLogin
+export default PersistLogin;

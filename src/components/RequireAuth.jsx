@@ -6,11 +6,11 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 function RequireAuth() {
     const { auth } = useAuth()
+    console.log(auth)
     const location = useLocation()
     const queryClient = useQueryClient();
     const myState = queryClient.getQueryData(["user"]);
     
-    console.log("fgfdg : ",myState);
     return (
         auth.accessToken
             ? <Outlet />

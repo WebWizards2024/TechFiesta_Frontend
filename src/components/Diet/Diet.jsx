@@ -1,15 +1,29 @@
 import { useState, useEffect } from "react";
-import { Coffee, UtensilsCrossed, Cookie, Sparkles, ArrowRight, Check } from "lucide-react";
+import {
+  Coffee,
+  UtensilsCrossed,
+  Cookie,
+  Sparkles,
+  ArrowRight,
+  Check,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function DietPlan() {
   const [disease, setDisease] = useState(() => {
     return localStorage.getItem("disease") || "diabetes";
   });
+
   const [dietData, setDietData] = useState(() => {
     const storedDiet = localStorage.getItem("dietData");
-    return storedDiet ? JSON.parse(storedDiet) : null;
+    try {
+      return storedDiet ? JSON.parse(storedDiet) : null;
+    } catch (error) {
+      console.error("Error parsing dietData from localStorage:", error);
+      return null;
+    }
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -24,7 +38,7 @@ export default function DietPlan() {
     setError(null);
 
     try {
-      const response = await fetch("/api/v1/diet/get-die", {
+      const response = await fetch("/api/v1/diet/get-diet", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ disease }),
@@ -34,7 +48,7 @@ export default function DietPlan() {
 
       if (result.success) {
         setDietData(result.data.dietPlan);
-        localStorage.setItem("dietData", JSON.stringify(result.data.dietPlan));
+        localStorage.setItem("dietData", JSON.stringify(result.data.dietPlan)); // ✅ Fixed Storage
         localStorage.setItem("disease", disease);
       } else {
         throw new Error(result.message);
@@ -115,9 +129,13 @@ export default function DietPlan() {
                   transition={{ delay: index * 0.2 }}
                 >
                   <div className="bg-[#4285f4] text-white p-4 flex items-center gap-2">
-                    {meal === "Breakfast" ? <Coffee className="w-6 h-6" /> :
-                      meal === "Lunch" ? <UtensilsCrossed className="w-6 h-6" /> :
-                        <Cookie className="w-6 h-6" />}
+                    {meal === "Breakfast" ? (
+                      <Coffee className="w-6 h-6" />
+                    ) : meal === "Lunch" ? (
+                      <UtensilsCrossed className="w-6 h-6" />
+                    ) : (
+                      <Cookie className="w-6 h-6" />
+                    )}
                     <h2 className="text-xl font-semibold">{meal}</h2>
                   </div>
                   <div className="bg-white p-6 shadow-md rounded-b-lg grid grid-cols-2 gap-6 group">
@@ -126,14 +144,18 @@ export default function DietPlan() {
                         Foods
                         <span className="w-2 h-2 bg-[#4285f4] rounded-full animate-pulse" />
                       </h3>
-                      <p className="text-gray-600">{details.Foods?.join(", ") || "N/A"}</p>
+                      <p className="text-gray-600">
+                        {details.Foods?.join(", ") || "N/A"}
+                      </p>
                     </div>
                     <div className="transform transition-all duration-300 group-hover:scale-105">
                       <h3 className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
                         Nutritional Benefits
                         <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                       </h3>
-                      <p className="text-gray-600">{details.NutritionalBenefits || "No details available"}</p>
+                      <p className="text-gray-600">
+                        {details.NutritionalBenefits || "No details available"}
+                      </p>
                     </div>
                   </div>
                 </motion.div>
@@ -142,7 +164,9 @@ export default function DietPlan() {
           ))}
         </motion.div>
       ) : (
-        !isLoading && <p className="text-gray-500 text-center">No diet plan available.</p>
+        !isLoading && (
+          <p className="text-gray-500 text-center">No diet plan available.</p>
+        )
       )}
     </div>
   );

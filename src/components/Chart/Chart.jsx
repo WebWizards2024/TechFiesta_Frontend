@@ -12,23 +12,26 @@ const HealthGraph = () => {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState({});
 
-  const { setAuth } = useAuth()
+  const { setAuth } = useAuth();
 
-  const { auth } = useAuth();
+  // const { auth } = useAuth();
   const queryClient = useQueryClient();
-  const userId = auth.user_id;
-
+  const auth = queryClient.getQueryData(["auth"]);
+  console.log(auth);
   useEffect(() => {
     axios
-      .get(`http://localhost:8000/api/v1/health-data/getUser/${userId}`)
+      .get(`/api/v1/health-data/getUser/${auth.user_id}`)
       .then((response) => {
         // console.log("API Response:", response.data.data.disease);
         const disease = response.data.data.disease;
+        const dis = response.data;
+        setAuth((pre) => ({ ...pre, dis }));
+        queryClient.setQueryData(["userHealthData"], dis);
+        response.data;
         setAuth((prevAuth) => ({
           ...prevAuth,
           disease,
         }));
-        
 
         const { healthData } = response.data.data || {};
         const range = response.data.range || [];
@@ -57,7 +60,7 @@ const HealthGraph = () => {
         }
       })
       .catch((error) => console.error("Error fetching health data:", error));
-  }, []);
+  }, [auth.user_id]);
 
   const handleInputChange = (param, value) => {
     if (value.trim() === "" || isNaN(value)) return;
@@ -105,7 +108,9 @@ const HealthGraph = () => {
     const data = healthData[parameter];
 
     const dates = data.map((item) =>
-      item.date ? new Date(item.date).toLocaleDateString("en-GB") : "Unknown Date"
+      item.date
+        ? new Date(item.date).toLocaleDateString("en-GB")
+        : "Unknown Date"
     );
 
     const values = data.map((item) => parseFloat(item.value));
@@ -158,7 +163,9 @@ const HealthGraph = () => {
   return (
     <div className="bg-white">
       <div className="flex justify-between items-center mb-6 bg-white">
-        <h2 className="text-2xl font-bold text-gray-800">Health Data Visualization</h2>
+        <h2 className="text-2xl font-bold text-gray-800">
+          Health Data Visualization
+        </h2>
         <button
           onClick={() => {
             setShowForm(!showForm);
@@ -175,7 +182,9 @@ const HealthGraph = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {parameters.map((param) => (
               <div key={param}>
-                <label className="block text-sm font-medium text-gray-700 mb-1">{param}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {param}
+                </label>
                 <input
                   type="number"
                   value={formData[param]?.[0]?.value || ""}
@@ -221,7 +230,12 @@ const HealthGraph = () => {
           chartData && (
             <div key={param} className="bg-white shadow-md p-4 rounded-xl mb-6">
               <h3 className="text-lg font-semibold">{param}</h3>
-              <Chart options={chartData.options} series={chartData.series} type="line" height={350} />
+              <Chart
+                options={chartData.options}
+                series={chartData.series}
+                type="line"
+                height={350}
+              />
             </div>
           )
         );
