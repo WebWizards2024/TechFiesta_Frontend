@@ -156,8 +156,8 @@ const HealthGraph = () => {
   const parameters = Object.keys(inputData);
 
   return (
-    <div className="bg-white">
-      <div className="flex justify-between items-center mb-6 bg-white">
+    <div className="bg-white p-10">
+      {/* <div className="flex justify-between items-center mb-6 bg-white">
         <h2 className="text-2xl font-bold text-gray-800">Health Data Visualization</h2>
         <button
           onClick={() => {
@@ -168,9 +168,9 @@ const HealthGraph = () => {
         >
           Add Values
         </button>
-      </div>
+      </div> */}
 
-      {showForm && (
+      {/* {showForm && (
         <form onSubmit={handleSubmit} className="mb-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {parameters.map((param) => (
@@ -193,7 +193,7 @@ const HealthGraph = () => {
             Submit Values
           </button>
         </form>
-      )}
+      )} */}
 
       {/* Dynamically generate MetricCard components */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">

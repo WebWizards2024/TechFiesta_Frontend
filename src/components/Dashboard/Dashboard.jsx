@@ -24,7 +24,7 @@ const Dashboard = () => {
   return (
     <div className="h-screen  overflow-auto bg-white p-6">
       {/* Header */}
-      <div className="flex justify-between items-center mb-8">
+      {/* <div className="flex justify-between items-center mb-8">
         <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <div className="flex gap-2">
           <button
@@ -52,7 +52,7 @@ const Dashboard = () => {
             Last 90 days
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div className="space-y-6 bg-white">
        

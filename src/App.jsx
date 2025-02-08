@@ -22,6 +22,13 @@ import Chart from './components/Chart/Chart';
 import Dashboard_new from './components/Chart/Dashboard_new';
 import RequireAuth from './components/RequireAuth';
 import PersistLogin from './components/PersistLogin'
+import Diet from './components/Diet/Diet';
+import SolutionContainer from './components/Solution/SolutionContainer';
+import Share from './components/Share/Share';
+import SendEmail from './components/Share/sendEmail';
+import Documentation from './components/Solution/Documentation';
+
+
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -40,28 +47,35 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-          <Route element={<PersistLogin/>}>
-            <Route path="/" element={<Home />} />
+            <Route element={<PersistLogin />}>
+              <Route path="/" element={<Home />} />
             </Route>
             <Route path="/register" element={<Register />} />
             <Route path="/login" element={<Login />} />
-            
-            <Route path="/new" element={<Dashboard_new />} />
+            <Route path="/new" element={< Dashboard_new/>} />
+            <Route path="/share/:userId" element={<Share />} />
+
+            <Route path="/share" element={<Chart />} />
             {/* Parent Route */}
-          <Route element={<PersistLogin/>}>
-            <Route element={<RequireAuth />}>
-              <Route path="/container" element={<Container />}>
-                {/* Child Routes (Fix: Remove leading /) */}
-                {/* <Route path="dashboard" element={<Dashboard />} /> */}
-                <Route path="profile" element={<Profile />} />
-                <Route path="editprofile" element={<ProfileEditForm />} />
-                <Route path="diagnostic" element={<DiseaseInput />} />
-                <Route path="dashboard" element={<Dashboard />} />
-                <Route path="solution" element={<Solution />} />
-                <Route path="community" element={<Community />} />
+            <Route element={<PersistLogin />}>
+              <Route element={<RequireAuth />}>
+                <Route path="/container" element={<Container />}>
+                  {/* Child Routes (Fix: Remove leading /) */}
+                  {/* <Route path="dashboard" element={<Dashboard />} /> */}
+                  <Route path="profile" element={<Profile />} />
+                  <Route path="editprofile" element={<ProfileEditForm />} />
+                  <Route path="diagnostic" element={<DiseaseInput />} />
+                  <Route path="dashboard" element={<Dashboard />} />
+                  <Route path="container_sol" element={<SolutionContainer />} >
+                    <Route path="video" element={<Solution />} />
+                    {/* <Route path="diet" element={<Diet />} />
+                    <Route path="document" element={<Documentation />} /> */}
+                  </Route>
+                  <Route path="community" element={<Community />} />
+                  <Route path="share" element={<SendEmail />} />
+                </Route>
               </Route>
             </Route>
-          </Route>
 
 
           </Routes>

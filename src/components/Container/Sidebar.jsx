@@ -43,7 +43,7 @@ const styles = `
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(true);
-  const [activeItem, setActiveItem] = useState("Community Help");
+  const [activeItem, setActiveItem] = useState("Profile");
   const navigate = useNavigate(); // React Router navigation
 
   const queryClient = useQueryClient();
@@ -54,10 +54,11 @@ const Sidebar = () => {
     { icon: User, label: "Profile", path: "profile" },
     { icon: LayoutDashboard, label: "Dashboard", path: "dashboard" },
     { icon: FileText, label: "Diagnostic Data Info", path: "diagnostic" },
-    { icon: Lightbulb, label: "Solution", path: "solution" },
+    { icon: Lightbulb, label: "Solution", path: "container_sol/video" },
+    { icon: Lightbulb, label: "Reminder", path: "reminder" },
     { icon: Users, label: "Community Help", path: "community" },
-    { icon: Download, label: "Export Data", path: "/export" },
-    { icon: Settings, label: "Settings", path: "/settings" },
+    { icon: Download, label: "Export Data", path: "share" },
+    // { icon: Settings, label: "Diet", path: "diet" },
   ];
 
   const handleItemClick = (label, path) => {

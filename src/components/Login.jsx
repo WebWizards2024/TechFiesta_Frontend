@@ -26,8 +26,10 @@ const Login = () => {
     onSuccess: (data) => {
       const accessToken = data.data.accessToken;
       const user_id = data.data.user._id;
-      // console.log(data.data.user._id)
-      setAuth({ accessToken , user_id})
+      console.log(data.data.user.fullName)
+      const username = data.data.user.fullName;
+      
+      setAuth({ accessToken , user_id ,username})
       // console.log("spdjpondfoidnfv", data);
       toast.success("User Login Successfully!");
       console.log(data.data);

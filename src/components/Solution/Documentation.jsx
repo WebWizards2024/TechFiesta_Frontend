@@ -1,18 +1,36 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { Download, Search, WormIcon as Virus, Heart, Shield, ChevronRight, ChevronDown } from "lucide-react";
 
 export default function DiseaseDocs() {
-  const [disease, setDisease] = useState("hypertension");
+  const [disease, setDisease] = useState(() => {
+    return localStorage.getItem("disease") || "hypertension";
+  });
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [expandedRemedy, setExpandedRemedy] = useState(null);
-  const [article, setArticle] = useState({
-    title: "Enter a disease and click Generate",
-    about: "Waiting for input...",
-    remedies: [],
-    future_threats: "",
+  const [article, setArticle] = useState(() => {
+    const storedArticle = localStorage.getItem("diseaseArticle");
+    return storedArticle
+      ? JSON.parse(storedArticle)
+      : {
+          title: "Enter a disease and click Generate",
+          about: "Waiting for input...",
+          remedies: [],
+          future_threats: "",
+        };
   });
+
+  useEffect(() => {
+    localStorage.setItem("disease", disease);
+  }, [disease]);
+
+  useEffect(() => {
+    if (article.title !== "Enter a disease and click Generate") {
+      localStorage.setItem("diseaseArticle", JSON.stringify(article));
+    }
+  }, [article]);
 
   const fetchDocumentation = () => {
     setIsGenerating(true);
@@ -24,12 +42,15 @@ export default function DiseaseDocs() {
       )
       .then((res) => {
         const data = res.data.data.document;
-        setArticle({
+        const newArticle = {
           title: data.title,
           about: data.about,
           remedies: data.remedies,
           future_threats: data.future_threats,
-        });
+        };
+
+        setArticle(newArticle);
+        localStorage.setItem("diseaseArticle", JSON.stringify(newArticle));
       })
       .catch(() => {
         setArticle({
@@ -50,9 +71,7 @@ export default function DiseaseDocs() {
       ${article.about}
       
       Remedies
-      ${article.remedies
-        .map((remedy) => `- ${remedy.name}: ${remedy.description}`)
-        .join("\n")}
+      ${article.remedies.map((remedy) => `- ${remedy.name}: ${remedy.description}`).join("\n")}
       
       Future Threats
       ${article.future_threats}
@@ -70,7 +89,7 @@ export default function DiseaseDocs() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-purple-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br bg-white p-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -78,7 +97,7 @@ export default function DiseaseDocs() {
       >
         <div className="text-center space-y-4">
           <motion.h1
-            className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 text-transparent bg-clip-text"
+            className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 text-transparent bg-clip-text"
             initial={{ scale: 0.9 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }}
@@ -94,14 +113,14 @@ export default function DiseaseDocs() {
             <input
               value={disease}
               onChange={(e) => setDisease(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter disease name..."
             />
           </div>
           <button
             onClick={fetchDocumentation}
             disabled={isGenerating}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition duration-200"
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200"
           >
             {isGenerating ? "Generating..." : "Generate Documentation"}
           </button>
@@ -127,7 +146,7 @@ export default function DiseaseDocs() {
           <div className="p-6 space-y-8">
             <section className="space-y-4">
               <div className="flex items-center gap-2">
-                <Virus className="h-5 w-5 text-purple-600" />
+                <Virus className="h-5 w-5 text-blue-600" />
                 <h3 className="text-xl font-semibold text-gray-800">About</h3>
               </div>
               <p className="text-gray-600 leading-relaxed">{article.about}</p>
@@ -135,7 +154,7 @@ export default function DiseaseDocs() {
 
             <section className="space-y-4">
               <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-purple-600" />
+                <Heart className="h-5 w-5 text-blue-600" />
                 <h3 className="text-xl font-semibold text-gray-800">Remedies</h3>
               </div>
               <div className="grid gap-3">
@@ -143,10 +162,10 @@ export default function DiseaseDocs() {
                   <div key={index} className="border border-gray-100 rounded-lg overflow-hidden">
                     <button
                       onClick={() => setExpandedRemedy(expandedRemedy === index ? null : index)}
-                      className="w-full flex items-center justify-between p-4 hover:bg-purple-50 transition-colors"
+                      className="w-full flex items-center justify-between p-4 hover:bg-blue-50 transition-colors"
                     >
                       <div className="flex items-center gap-2">
-                        <ChevronRight className="h-4 w-4 text-purple-600" />
+                        <ChevronRight className="h-4 w-4 text-blue-600" />
                         <span className="font-medium text-gray-700">{remedy.name}</span>
                       </div>
                       <ChevronDown
@@ -177,7 +196,7 @@ export default function DiseaseDocs() {
 
             <section className="space-y-4">
               <div className="flex items-center gap-2">
-                <Shield className="h-5 w-5 text-purple-600" />
+                <Shield className="h-5 w-5 text-blue-600" />
                 <h3 className="text-xl font-semibold text-gray-800">Future Threats</h3>
               </div>
               <p className="text-gray-600 leading-relaxed">{article.future_threats}</p>
