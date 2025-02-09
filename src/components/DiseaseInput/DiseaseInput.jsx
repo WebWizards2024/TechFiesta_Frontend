@@ -6,29 +6,65 @@ export default function DiseaseInput() {
   const [disease, setDisease] = useState("");
   const [healthData, setHealthData] = useState({});
   const [symptoms, setSymptoms] = useState("");
-  const [medications, setMedications] = useState([{ name: "", dosage: "", frequency: "" }]);
+  const [medications, setMedications] = useState([
+    { name: "", dosage: "", frequency: "" },
+  ]);
   const queryClient = useQueryClient();
   const myState = queryClient.getQueryData(["user"]);
 
-
   const diseaseParameters = {
-    Diabetes: ["Blood Sugar", "HbA1c", "Blood Pressure"],
-    Hypertension: ["Systolic BP", "Diastolic BP", "Heart Rate"],
-    Asthma: ["Peak Flow", "FEV1", "Inhaler Usage"],
-    COPD: ["FEV1", "Oxygen Saturation", "Dyspnea Scale"],
+    diabetes: ["bloodSugar", "hba1c", "bloodPressure"],
+    hypertension: ["systolicBp", "diastolicBp", "heartRate"],
+    asthma: ["peakFlow", "fev1", "inhalerUsage"],
+    copd: ["fev1", "oxygenSaturation", "dyspneaScale"],
+    chronicKidneyDisease: ["creatinine", "gfr", "bloodUreaNitrogen"],
+    heartDisease: ["ecg", "ejectionFraction", "troponinLevels"],
+    stroke: ["ctScan", "bloodPressure", "cholesterolLevels"],
+    osteoporosis: ["boneDensity", "calciumLevels", "vitaminD"],
+    arthritis: ["cReactiveProtein", "jointPainScore", "xRayFindings"],
+    alzheimersDisease: [
+      "cognitiveTestScore",
+      "mriFindings",
+      "amyloidBetaLevels",
+    ],
+    parkinsonsDisease: ["dopamineLevels", "updrsScore", "motorFunctionTest"],
+    multipleSclerosis: ["mriLesions", "edssScore", "csfOligoclonalBands"],
+    chronicLiverDisease: ["altAst", "bilirubin", "albumin"],
+    thyroidDisorder: ["tsh", "t3", "t4"],
+    depression: ["phq9Score", "serotoninLevels", "cortisolLevels"],
+    anxietyDisorder: ["gad7Score", "heartRateVariability", "cortisolLevels"],
+    epilepsy: ["eeg", "seizureFrequency", "medicationLevels"],
+    chronicPainSyndrome: [
+      "painScale",
+      "opioidUsage",
+      "functionalDisabilityScore",
+    ],
+    psoriasis: ["pasiScore", "skinBiopsy", "inflammatoryMarkers"],
+    obesity: ["bmi", "bodyFatPercentage", "waistCircumference"],
+    cancer: ["tumorMarkers", "biopsyResults", "petScan"],
+    chronicFatigueSyndrome: [
+      "energyLevels",
+      "sleepQuality",
+      "cognitiveFunction",
+    ],
+    hivAids: ["cd4Count", "viralLoad", "opportunisticInfections"],
+    tuberculosis: ["chestXray", "sputumTest", "tbSkinTest"],
+    autoimmuneDisease: ["anaTest", "inflammatoryMarkers", "organInvolvement"],
   };
 
   const handleInputChange = (param, value) => {
     if (value.trim() === "" || isNaN(value)) {
       return; // Don't update if value is empty or non-numeric
     }
-    
+
     setHealthData((prevData) => ({
       ...prevData,
-      [param]: [...(prevData[param] || []), { date: new Date().toISOString(), value }]
+      [param]: [
+        ...(prevData[param] || []),
+        { date: new Date().toISOString(), value },
+      ],
     }));
   };
-  
 
   const handleMedicationChange = (index, field, value) => {
     setMedications((prevMeds) => {
@@ -39,7 +75,10 @@ export default function DiseaseInput() {
   };
 
   const addMedication = () => {
-    setMedications((prevMeds) => [...prevMeds, { name: "", dosage: "", frequency: "" }]);
+    setMedications((prevMeds) => [
+      ...prevMeds,
+      { name: "", dosage: "", frequency: "" },
+    ]);
   };
 
   const removeMedication = (index) => {
@@ -55,13 +94,16 @@ export default function DiseaseInput() {
     const formData = { disease, healthData, symptoms, medications, patientId };
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/health-data/submit", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "http://localhost:8000/api/v1/health-data/submit",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       const result = await response.json();
 
@@ -78,12 +120,20 @@ export default function DiseaseInput() {
 
   return (
     <div className="min-h-screen  flex items-center justify-center p-4 bg-white">
-      <form onSubmit={handleSubmit} className="w-full max-w-4xl bg-white  rounded-3xl p-8 space-y-8">
-        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 text-center">Health Data Input</h2>
+      <form
+        onSubmit={handleSubmit}
+        className="w-full max-w-4xl bg-white  rounded-3xl p-8 space-y-8"
+      >
+        <h2 className="text-3xl md:text-4xl font-bold mb-6 text-gray-800 text-center">
+          Health Data Input
+        </h2>
 
         {/* Disease Selection */}
         <div className="space-y-2">
-          <label htmlFor="disease" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="disease"
+            className="block text-sm font-medium text-gray-700"
+          >
             Select Disease:
           </label>
           <select
@@ -107,11 +157,16 @@ export default function DiseaseInput() {
         {/* Dynamically Render Health Parameters */}
         {disease && diseaseParameters[disease].length > 0 && (
           <div className="space-y-4">
-            <h3 className="text-xl font-semibold text-gray-800">Health Parameters</h3>
+            <h3 className="text-xl font-semibold text-gray-800">
+              Health Parameters
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {diseaseParameters[disease].map((param) => (
                 <div key={param} className="space-y-1">
-                  <label htmlFor={param} className="block text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor={param}
+                    className="block text-sm font-medium text-gray-700"
+                  >
                     {param}:
                   </label>
                   <input
@@ -183,7 +238,10 @@ export default function DiseaseInput() {
         </div> */}
 
         {/* Submit Button */}
-        <button type="submit" className="w-full bg-[#2B6CB0] text-white p-4 rounded-lg text-lg font-semibold hover:bg-[#3f5d7d] transition duration-200">
+        <button
+          type="submit"
+          className="w-full bg-[#2B6CB0] text-white p-4 rounded-lg text-lg font-semibold hover:bg-[#3f5d7d] transition duration-200"
+        >
           Submit Health Data
         </button>
       </form>

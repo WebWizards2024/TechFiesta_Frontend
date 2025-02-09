@@ -13,6 +13,7 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
+  Clock
 } from "lucide-react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -55,7 +56,7 @@ const Sidebar = () => {
     { icon: LayoutDashboard, label: "Dashboard", path: "dashboard" },
     { icon: FileText, label: "Diagnostic Data Info", path: "diagnostic" },
     { icon: Lightbulb, label: "Solution", path: "container_sol/video" },
-    { icon: Lightbulb, label: "Reminder", path: "reminder" },
+    { icon: Clock, label: "Reminder", path: "reminder" },
     { icon: Users, label: "Community Help", path: "community" },
     { icon: Download, label: "Export Data", path: "share" },
     // { icon: Settings, label: "Diet", path: "diet" },

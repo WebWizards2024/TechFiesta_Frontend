@@ -1,10 +1,9 @@
 import { useSession } from "@supabase/auth-helpers-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { updateUser } from "../services/apiUsers";
+import { updateUser } from "../../services/apiUsers";
 
 function HandleReminder({ eventId, status, placeholder, fieldName }) {
-  console.log(eventId, status);
   const [eventName, setEventName] = useState("");
   const [time, setTime] = useState(new Date());
   const queryClient = useQueryClient();
@@ -94,9 +93,12 @@ function HandleReminder({ eventId, status, placeholder, fieldName }) {
         eventId: eId,
         status: [{ date: new Date(), hasTaken: false }],
       };
+      console.log(healthData.healthData.medicReminder);
       handleUpdateUser({
         id: healthData.healthData._id,
-        updatedData: { medicReminder: [medicStatus] },
+        updatedData: {
+          medicReminder: [...healthData.healthData.medicReminder, medicStatus],
+        },
       });
     }
     alert("Event created");
@@ -119,7 +121,7 @@ function HandleReminder({ eventId, status, placeholder, fieldName }) {
       />
       <button
         onClick={createCalenderEvent}
-        className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+        className="bg-blue-600 text-white px-3 py-1 cursor-pointer rounded-md hover:bg-blue-700"
       >
         Add To Calendar
       </button>

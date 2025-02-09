@@ -4,16 +4,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthProvider";
 import Solution from "./components/Solution/Solution";
-import Community from "./components/Community/Community";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Profile from "./components/Profile/Profile";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQueries,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import "./App.css";
@@ -35,9 +28,8 @@ import SendEmail from "./components/Share/sendEmail";
 import Documentation from "./components/Solution/Documentation";
 import { useSession } from "@supabase/auth-helpers-react";
 import Reminder from "./components/Reminder/Reminder";
-import { getUserHealthData } from "./services/apiUsers";
-import { useGetMedicData } from "./hooks/useGetMedicData";
-import useAuth from "./hooks/useAuth";
+import Communityshow from "./components/Community/Communityshow";
+import Post from "./components/Community/Post";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,7 +75,8 @@ function App() {
                     <Route path="exercise" element={<Exercise />} />
                     <Route path="documentation" element={<Documentation />} />
                   </Route>
-                  <Route path="community" element={<Community />} />
+                  <Route path="community" element={<Communityshow />} />
+                  <Route path="post/:communityId" element={<Post />} />
                   <Route path="share" element={<SendEmail />} />
                 </Route>
               </Route>

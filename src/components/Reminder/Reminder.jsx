@@ -11,7 +11,7 @@ function Reminder() {
 
   return (
     <div>
-      <div className="p-4 bg-[#258bff] space-y-4 rounded-md">
+      <div className="p-4 border-[#258bff] border-2 space-y-4 rounded-md">
         <h1>Medicine Alerts</h1>
         <HandleReminder placeholder="medicine name" fieldName="medic" />
         {healthData.medicReminder.map((mr, i) => {
@@ -22,7 +22,7 @@ function Reminder() {
         })}
         <button
           onClick={() => alert("Medicine taken 👍")}
-          className="bg-blue-600 text-white px-3 py-1 rounded-md hover:bg-blue-700"
+          className="bg-blue-600 text-white px-3 cursor-pointer py-1 rounded-md hover:bg-blue-700"
         >
           Save
         </button>
